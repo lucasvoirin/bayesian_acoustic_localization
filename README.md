@@ -11,6 +11,7 @@ This repository contains code to reproduce analyses from "Bayesian acoustic loca
 
 - Python >= 3.11.9
 - pip
+- R
 
 ### Download code
 
