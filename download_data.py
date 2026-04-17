@@ -39,7 +39,7 @@ for f, est_fichier_csv in tqdm(fichiers_a_telecharger, desc="Téléchargement", 
     else:
         url = f"{BASE_URL}/api/access/datafile/{file_id}"
 
-    filepath = os.path.join("dataset", directory, filename)
+    filepath = os.path.join("data", directory, filename)
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
 
     r = requests.get(url, headers={"X-Dataverse-key": API_TOKEN})
