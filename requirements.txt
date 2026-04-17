@@ -1,0 +1,12 @@
+arviz==1.0.0
+laplace_soundscape==0.0.1
+matplotlib==3.10.8
+numpy==2.4.4
+pandas==3.0.2
+pyDataverse==0.3.5
+pymc==5.28.4
+Requests==2.33.1
+scipy==1.17.1
+seaborn==0.13.2
+Shapely==2.1.2
+tqdm==4.67.1
