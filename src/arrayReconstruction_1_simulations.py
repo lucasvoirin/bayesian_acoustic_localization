@@ -16,7 +16,7 @@ from scipy.spatial import distance
 import time
 
 # Settings ====================================================================
-OUTPUT = "./results/arrayReconstruction_simulationResults_test17122025.csv"
+OUTPUT = "./results/arrayReconstruction_simulationResults.csv"
 GRID = False # Recorders placed in a regular grid
 SEED = 123 # For reproductibility
 
@@ -28,7 +28,7 @@ N_NEIGHBORS = 3 # Number of closest neighbors used for measuring distances
 MIN_RECORDERS_DISTANCE = 5 # Minimum distance between two recorders (m)
 DISTANCE_ERROR = 0.3 # Expected measurement error between recorders (m)
 
-# Parameters for array deformation
+# Parameters for array deformation (aléatoire sinon)
 ARRAY_JITTER = 5
 # ARRAY_ROTATION = 5
 # ARRAY_X_SHIFT = 5

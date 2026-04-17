@@ -5,9 +5,9 @@ from tqdm import tqdm
 
 BASE_URL = "https://borealisdata.ca"
 DOI = "doi:10.5683/SP3/AUWB3O"
-DIRS = ["test_localisation_20250808/SYNC"]
+DIRS = ["test_localisation_20250808/SYNC", "mesures_distances_wood1_20250807/SYNC"]
 FILES = ["test_localisation_20250808/master_propagation_2025_annotations.rds"]
-TAB_FILES = ["test_localisation_20250808/data.tab"]
+TAB_FILES = ["test_localisation_20250808/data.tab", "mesures_distances_wood1_20250807/distances.tab"]
 
 api = NativeApi(BASE_URL, API_TOKEN)
 dataset = api.get_dataset(DOI)
