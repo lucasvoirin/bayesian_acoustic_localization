@@ -9,7 +9,7 @@ DIRS = ["test_localisation_20250808/SYNC", "mesures_distances_wood1_20250807/SYN
 FILES = ["test_localisation_20250808/master_propagation_2025_annotations.rds"]
 TAB_FILES = ["test_localisation_20250808/data.tab", "mesures_distances_wood1_20250807/distances.tab"]
 
-api = NativeApi(BASE_URL, API_TOKEN)
+api = NativeApi(BASE_URL)
 dataset = api.get_dataset(DOI)
 files = dataset.json()["data"]["latestVersion"]["files"]
 
