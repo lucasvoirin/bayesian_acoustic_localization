@@ -72,4 +72,8 @@ for f, est_tab in tqdm(fichiers_a_telecharger, desc="Téléchargement", unit="fi
         with open(filepath, "wb") as out:
             out.write(r.content)
 
+# remettre les fichiers audiomoth en capitales
+for path in glob.glob("./data/test_localisation_20250808/**/*.csv", recursive=True):
+    os.rename(path, path.replace(".csv", ".CSV"))
+
 os.makedirs("results/figures", exist_ok=True)
