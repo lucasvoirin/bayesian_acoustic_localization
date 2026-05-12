@@ -46,7 +46,7 @@ print(priors)
 
 array = lps.array.ArrayReconstruction(priors, DISTANCES, TARGET_EPSG, DISTANCE_ERROR)
 array.get_distances()
-array.plot()
+# array.plot()
 # array.export_geojson("./results/aru_positions.geojson")
 # array.export_geojson("./results/aru_gps_positions.geojson",posterior=False)
 array.prior_points
