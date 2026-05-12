@@ -17,7 +17,7 @@ array = lps.array.ArrayReconstruction.load("./results/fieldTest_array")
 metadata = pd.read_csv("./results/fieldTest_metadata.csv")
 
 TARGET_EPSG = array.epsg
-PATH = "../../Data/test_localisation_20250808/SYNC/"
+PATH = "./data/test_localisation_20250808/SYNC/"
 FILES = os.listdir(PATH)
 RECORDERS = ["A1", "A2", "A3", "B1", "C1", "C2", "D1", "D2"]
 TIME_BUFFER = 0.5
