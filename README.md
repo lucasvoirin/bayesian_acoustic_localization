@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11.9](https://img.shields.io/badge/python-3.11.9-blue.svg)](https://www.python.org/)
+[![R 4.5.3](https://img.shields.io/badge/R-4.5.3-blue.svg)](https://www.r-project.org/)
 
 This repository contains code to reproduce analyses from "Bayesian acoustic localization with uncertain recorders positions"
 
@@ -50,6 +51,7 @@ python3 download_data.py
 ```
 
 ## Repository structure
+
 ```
 ├── data/                                         # Only after running download_data.py
 │   ├── test_localisation_20250808/               # Acoustic data for localization tests
@@ -78,7 +80,7 @@ python3 download_data.py
 │   └── figures/                                  # Generated figures
 │
 ├── download_data.py                              # Downloads data TO RUN FIRST
-├── run.py                                        # Runs all analyses CAN TAKE SOME TIME
+├── run_all.py                                    # Runs all analyses CAN TAKE SOME TIME
 ├── requirements.txt                              # pip dependencies
 ├── LICENSE
 └── README.md
@@ -94,18 +96,41 @@ The analyses are computation intesive, running them can take a lot of time (seve
 
 To run the simultions of array reconstruction, please execute the following scripts in the specified order:
 
-1. `arrayReconstruction_1_simulations.py`
-2. `arrayReconstruction_2_resultsAnalysis.py`
+1. `src/arrayReconstruction_1_simulations.py`
+2. `src/arrayReconstruction_2_resultsAnalysis.py`
 
 To run the localization tests, please execute the following scripts in the specified order:
 
-1. `fieldTest_1_formatMetadata.py`
-2. `fieldTest_2_arrayReconstruction.py`
-3. `fieldTest_3_localization.py`
-4. `fieldTest_4_resultsAnalysis.py`
+1. `src/fieldTest_1_formatMetadata.py`
+2. `src/fieldTest_2_arrayReconstruction.py`
+3. `src/fieldTest_3_localization.py`
+4. `src/fieldTest_4_resultsAnalysis.py`
+
+To run figure generation scripts, please execute the following scripts:
+
+- `figures/arrayReconstruction_arrayExample.py`
+- `figures/arrayReconstruction_arrayMetrics.py`
+- `figures/arrayReconstruction_localizationMetrics.py`
+- `figures/fieldTest_array.py`
+- `figures/fieldTest_histErrorFm.py`
+
 
 ### All
 
-TODO Create a run.py script that runs all analyses
+To run all scripts (analyses and figures), please run the following script:
 
+```bash
+python3 run_all.py
+```
 
+This can take a very long time, it is better to run it on a server.
+
+## Notebook
+
+We provide an extra notebook as a simple example of acoustic localization.
+
+You can access it by running jupyter lab from the root directory.
+
+```bash
+jupyter lab
+```
