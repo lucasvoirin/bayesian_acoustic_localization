@@ -1,6 +1,7 @@
 from pyDataverse.api import NativeApi
 import requests
 import os
+import pandas as pd
 from tqdm import tqdm
 
 BASE_URL = "https://borealisdata.ca"
@@ -22,30 +23,42 @@ for f in files:
 
     dans_dossier_cible = any(directory.startswith(d) for d in DIRS)
     est_fichier_specifique = filepath_relatif in FILES
-    est_fichier_csv = filepath_relatif in TAB_FILES
+    est_fichier_tab = filepath_relatif in TAB_FILES
 
-    if dans_dossier_cible or est_fichier_specifique or est_fichier_csv:
-        fichiers_a_telecharger.append((f, est_fichier_csv))
+    if dans_dossier_cible or est_fichier_specifique or est_fichier_tab:
+        fichiers_a_telecharger.append((f, est_fichier_tab))
 
 # Télécharger avec barre de progression
-for f, est_fichier_csv in tqdm(fichiers_a_telecharger, desc="Téléchargement", unit="fichier"):
+for f, est_fichier_tab in tqdm(fichiers_a_telecharger, desc="Téléchargement", unit="fichier"):
     directory = f.get("directoryLabel", "")
     filename = f["dataFile"]["filename"]
     file_id = f["dataFile"]["id"]
 
-    if est_fichier_csv:
-        filename = filename.replace(".tab", ".csv")
-        url = f"{BASE_URL}/api/access/datafile/{file_id}?format=csv"
+    url = f"{BASE_URL}/api/access/datafile/{file_id}"
+
+    if est_fichier_tab:
+        filename_out = filename.replace(".tab", ".csv")
     else:
-        url = f"{BASE_URL}/api/access/datafile/{file_id}"
+        filename_out = filename
 
     filepath = os.path.join("data", directory, filename)
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
 
     r = requests.get(url, headers={"X-Dataverse-key": API_TOKEN})
-    with open(filepath, "wb") as out:
-        out.write(r.content)
+
+    if est_fichier_tab:
+        filepath_tab_tmp = filepath.replace(".csv", ".tab")
+        with open(filepath_tab_tmp, "wb") as out:
+            out.write(r.content)
+        try:
+            df = pd.read_csv(filepath_tab_tmp, sep="\t")
+            df.to_csv(filepath, index=False)
+            os.remove(filepath_tab_tmp)
+        except Exception as e:
+            os.rename(filepath_tab_tmp, filepath_tab_tmp)
+    else:
+        with open(filepath, "wb") as out:
+            out.write(r.content)
 
 # Ajouter les dossiers de figures et résultats
-os.makedirs("results")
-os.makedirs("results/figures")
+os.makedirs("results/figures", exist_ok=True)
