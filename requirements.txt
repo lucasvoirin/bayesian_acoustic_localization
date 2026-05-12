@@ -10,3 +10,4 @@ scipy==1.15.2
 seaborn==0.13.2
 Shapely==2.0.7
 tqdm==4.67.3
+guano==1.0.16
