@@ -6,7 +6,24 @@ from tqdm import tqdm
 
 BASE_URL = "https://borealisdata.ca"
 DOI = "doi:10.5683/SP3/AUWB3O"
-DIRS = ["test_localisation_20250808/SYNC", "mesures_distances_wood1_20250807/SYNC"]
+
+DIRS_ALL = [
+    "test_localisation_20250808/SYNC",
+    "mesures_distances_wood1_20250807/SYNC",
+]
+
+DIRS_CSV_ONLY = [
+    "test_localisation_20250808/C1/20250808",
+    "test_localisation_20250808/C2/20250808",
+    "test_localisation_20250808/D1/20250808",
+    "test_localisation_20250808/D2/20250808",
+    "test_localisation_20250808/A1/20250808",
+    "test_localisation_20250808/A2/20250808",
+    "test_localisation_20250808/A3/20250808",
+    "test_localisation_20250808/A4/20250808",
+    "test_localisation_20250808/B1/20250808",
+]
+
 FILES = ["test_localisation_20250808/master_propagation_2025_annotations.rds"]
 TAB_FILES = ["test_localisation_20250808/data.tab", "mesures_distances_wood1_20250807/distances.tab"]
 
@@ -21,15 +38,17 @@ for f in files:
     filename = f["dataFile"]["filename"]
     filepath_relatif = os.path.join(directory, filename)
 
-    dans_dossier_cible = any(directory.startswith(d) for d in DIRS)
+    dans_dossier_all = any(directory.startswith(d) for d in DIRS_ALL)
+    dans_dossier_csv = any(directory.startswith(d) for d in DIRS_CSV_ONLY) and filename.endswith(".tab")
     est_fichier_specifique = filepath_relatif in FILES
     est_fichier_tab = filepath_relatif in TAB_FILES
 
-    if dans_dossier_cible or est_fichier_specifique or est_fichier_tab:
-        fichiers_a_telecharger.append((f, est_fichier_tab))
+    if dans_dossier_all or dans_dossier_csv or est_fichier_specifique or est_fichier_tab:
+        est_tab = dans_dossier_csv or est_fichier_tab
+        fichiers_a_telecharger.append((f, est_tab))
 
 # Télécharger avec barre de progression
-for f, est_fichier_tab in tqdm(fichiers_a_telecharger, desc="Téléchargement", unit="fichier"):
+for f, est_tab in tqdm(fichiers_a_telecharger, desc="Téléchargement", unit="fichier"):
     directory = f.get("directoryLabel", "")
     filename = f["dataFile"]["filename"]
     file_id = f["dataFile"]["id"]
@@ -40,7 +59,7 @@ for f, est_fichier_tab in tqdm(fichiers_a_telecharger, desc="Téléchargement", 
     url = f"{BASE_URL}/api/access/datafile/{file_id}"
     r = requests.get(url, headers={"X-Dataverse-key": API_TOKEN}, timeout=120)
 
-    if est_fichier_tab:
+    if est_tab:
         filepath_tab_tmp = os.path.join(dest_dir, filename)
         filepath_csv = filepath_tab_tmp.replace(".tab", ".csv")
         with open(filepath_tab_tmp, "wb") as out:
@@ -53,5 +72,4 @@ for f, est_fichier_tab in tqdm(fichiers_a_telecharger, desc="Téléchargement", 
         with open(filepath, "wb") as out:
             out.write(r.content)
 
-# Ajouter les dossiers de figures et résultats
 os.makedirs("results/figures", exist_ok=True)
