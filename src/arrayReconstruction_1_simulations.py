@@ -25,7 +25,7 @@ N_SAMPLES = 500 # Number of prior positions per recorder
 N_FIXED_PRIORS = 2  # Nombre de priors fixés dans la grille
 N_NEIGHBORS = 3 # Number of closest neighbors used for measuring distances
 # N_RECORDERS = 6 # Number of recorders sinon aléatoire entre 4 et 8
-MIN_RECORDERS_DISTANCE = 5 # Minimum distance between two recorders (m)
+MIN_RECORDERS_DISTANCE = 20 # Minimum distance between two recorders (m)
 DISTANCE_ERROR = 0.3 # Expected measurement error between recorders (m)
 
 # Parameters for array deformation (aléatoire sinon)

@@ -1,5 +1,7 @@
 #!/usr/bin/Rscript
 
+install.packages("baRulho")
+
 library(baRulho)
 
 master_annotations = as.data.frame(

@@ -45,3 +45,7 @@ for f, est_fichier_csv in tqdm(fichiers_a_telecharger, desc="Téléchargement", 
     r = requests.get(url, headers={"X-Dataverse-key": API_TOKEN})
     with open(filepath, "wb") as out:
         out.write(r.content)
+
+# Ajouter les dossiers de figures et résultats
+os.makedirs("results")
+os.makedirs("results/figures")
