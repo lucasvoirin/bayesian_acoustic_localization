@@ -125,6 +125,8 @@ python3 run_all.py
 
 This can take a very long time, it is better to run it on a server.
 
+If you experience problems runing this script, you can try to run scripts "à la carte" to debug.
+
 ## Notebook
 
 We provide an extra notebook as a simple example of acoustic localization.
