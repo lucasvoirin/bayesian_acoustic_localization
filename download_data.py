@@ -34,29 +34,22 @@ for f, est_fichier_tab in tqdm(fichiers_a_telecharger, desc="Téléchargement", 
     filename = f["dataFile"]["filename"]
     file_id = f["dataFile"]["id"]
 
+    dest_dir = os.path.join("data", directory) if directory else "data"
+    os.makedirs(dest_dir, exist_ok=True)
+
     url = f"{BASE_URL}/api/access/datafile/{file_id}"
+    r = requests.get(url, headers={"X-Dataverse-key": API_TOKEN}, timeout=120)
 
     if est_fichier_tab:
-        filename_out = filename.replace(".tab", ".csv")
-    else:
-        filename_out = filename
-
-    filepath = os.path.join("data", directory, filename)
-    os.makedirs(os.path.dirname(filepath), exist_ok=True)
-
-    r = requests.get(url, headers={"X-Dataverse-key": API_TOKEN})
-
-    if est_fichier_tab:
-        filepath_tab_tmp = filepath.replace(".csv", ".tab")
+        filepath_tab_tmp = os.path.join(dest_dir, filename)
+        filepath_csv = filepath_tab_tmp.replace(".tab", ".csv")
         with open(filepath_tab_tmp, "wb") as out:
             out.write(r.content)
-        try:
-            df = pd.read_csv(filepath_tab_tmp, sep="\t")
-            df.to_csv(filepath, index=False)
-            os.remove(filepath_tab_tmp)
-        except Exception as e:
-            os.rename(filepath_tab_tmp, filepath_tab_tmp)
+        df = pd.read_csv(filepath_tab_tmp, sep="\t")
+        df.to_csv(filepath_csv, index=False)
+        os.remove(filepath_tab_tmp)
     else:
+        filepath = os.path.join(dest_dir, filename)
         with open(filepath, "wb") as out:
             out.write(r.content)
 
