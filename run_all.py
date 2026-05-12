@@ -18,7 +18,7 @@ for script in scripts:
     
     result = subprocess.run(
         ["python3", script],
-        capture_output=True,
+        capture_output=False,
         text=True
     )
     

@@ -7,7 +7,7 @@ import os
 import numpy as np
 import pandas as pd
 import laplace_soundscape as lps
-import lps.audiomoth.AudiomothPosition as AudiomothPosition
+AudiomothPosition = lps.audiomoth.AudiomothPosition
 
 distances = pd.read_csv("./results/fieldTest_distances.csv")
 
