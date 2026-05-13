@@ -44,7 +44,7 @@ pip install -r requirements.txt
 
 ### Download data
 
-The `download_data.py` script can be used to download acoustic data from the Borealis dataverse.
+The `download_data.py` script can be used to download acoustic data from the [Borealis dataverse](https://borealisdata.ca/).
 
 ```bash
 python3 download_data.py

@@ -3,6 +3,7 @@ import requests
 import os
 import pandas as pd
 from tqdm import tqdm
+import glob
 
 BASE_URL = "https://borealisdata.ca"
 DOI = "doi:10.5683/SP3/AUWB3O"
@@ -75,5 +76,8 @@ for f, est_tab in tqdm(fichiers_a_telecharger, desc="Téléchargement", unit="fi
 # remettre les fichiers audiomoth en capitales
 for path in glob.glob("./data/test_localisation_20250808/**/*.csv", recursive=True):
     os.rename(path, path.replace(".csv", ".CSV"))
+
+path="./data/test_localisation_20250808/data.CSV"
+os.rename(path, path.replace(".CSV", ".csv"))
 
 os.makedirs("results/figures", exist_ok=True)
