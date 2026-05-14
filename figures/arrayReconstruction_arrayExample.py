@@ -1,47 +1,120 @@
-
 import numpy as np
 import pandas as pd
 import pymc as pm
 from scipy.optimize import minimize
 from scipy.spatial import distance
 import matplotlib.colors as mcolors
-from src import arrayReconstruction_1_simulations as params
 import matplotlib.pyplot as plt
 
 # Settings ====================================================================
-GRID = True # params.GRID # Recorders placed in a regular grid
-SEED = 11 # For reproductibility
+GRID = False # params.GRID # Recorders placed in a regular grid
+SEED = 123 # For reproductibility
 
 N_SAMPLES = 500# params.N_SAMPLES # Number of prior positions per recorder
 N_FIXED_PRIORS = 2 #params.N_FIXED_PRIORS  # par exemple
 N_NEIGHBORS = 3 # params.N_NEIGHBORS # Number of closest neighbors used for measuring distances
-N_RECORDERS = 16 # Number of recorders
+N_RECORDERS = 6 # Number of recorders
 
 DISTANCE_ERROR = 0.3# params.DISTANCE_ERROR # Expected measurement error between recorders
 
 # Parameters for array deformation
-ARRAY_JITTER = 5 # params.ARRAY_JITTER
+ARRAY_JITTER = 2 # params.ARRAY_JITTER
 # ARRAY_ROTATION = 5
 # ARRAY_X_SHIFT = 5
 # ARRAY_Y_SHIFT = 0
 
-deform_grid = params.deform_grid
-generate_measured_positions = params.generate_measured_positions
-localize = params.localize
-create_coef_matrix = params.create_coef_matrix
+MIN_RECORDERS_DISTANCE = 10
+
+# Functions ===================================================================
+def generate_grid(width, height, spacing):
+    xx, yy = np.meshgrid(np.arange(0, width * spacing, spacing),
+                         np.arange(0, height * spacing, spacing)[::-1])
+    return xx.ravel(), yy.ravel(), width * height
+
+def deform_grid(x, y, jitter=0, rotation=0, shift_x=0, shift_y=0):
+    coords = np.column_stack((x.astype(float), y.astype(float)))
+    if jitter > 0:
+        coords += np.random.normal(0, jitter, coords.shape)
+    if rotation != 0:
+        angle = np.deg2rad(rotation)
+        center = coords.mean(axis=0)
+        coords_centered = coords - center
+        rotation_matrix = np.array([[np.cos(angle), -np.sin(angle)],
+                                    [np.sin(angle),  np.cos(angle)]])
+        coords = coords_centered @ rotation_matrix.T + center
+    coords[:,0] += shift_x
+    coords[:,1] += shift_y
+    return coords[:,0], coords[:,1]
+
+def create_coef_matrix(n_mics, tdoa_pairs):
+    mat = np.zeros((len(tdoa_pairs), n_mics))
+    for idx, (i, j) in enumerate(tdoa_pairs):
+        mat[idx, i] = 1
+        mat[idx, j] = -1
+    return mat
+
+def tdoa_cost(xy, array, coef_matrix, tdoa, c=340.0):
+    dists = np.linalg.norm(array - xy, axis=1)
+    theo_tdoa = coef_matrix @ (dists / c)
+    return np.linalg.norm(tdoa - theo_tdoa)
+
+def localize(array, tdoa, x0, y0, coef_matrix, buffer=10.0):
+    bounds = [(array[:,0].min()-buffer, array[:,0].max()+buffer),
+              (array[:,1].min()-buffer, array[:,1].max()+buffer)]
+    res = minimize(
+        tdoa_cost, (x0, y0),
+        args=(array, coef_matrix, tdoa), method='L-BFGS-B', bounds=bounds)
+    return res.x
+
+def generate_measured_positions(xb, yb, sdxs, sdys, n_samples):
+    return [np.stack([np.random.normal(xb[i], sdxs[i], n_samples),
+                      np.random.normal(yb[i], sdys[i], n_samples)], axis=1)
+            for i in range(len(xb))]
+
+def compute_mse(est, true):
+    pairs = [(i,j) for i in range(len(est)) for j in range(i+1, len(est))]
+    return np.mean([np.linalg.norm(est[i]-est[j] - (true[i]-true[j])) for i,j in pairs])
+
+def generate_points_with_min_distance(n_points, xlim=(0,50), ylim=(0,50), dmin=5):
+    points = []
+    attempts = 0
+    max_attempts = 10000
+
+    while len(points) < n_points and attempts < max_attempts:
+        candidate = np.random.uniform([xlim[0], ylim[0]], [xlim[1], ylim[1]])
+        if all(np.linalg.norm(candidate - np.array(p)) >= dmin for p in points):
+            points.append(candidate)
+        attempts += 1
+
+    if len(points) < n_points:
+        remaining = n_points - len(points)
+        extra = np.random.uniform([xlim[0], ylim[0]], [xlim[1], ylim[1]], size=(remaining, 2))
+        points.extend(extra)
+
+    return np.array(points)[:,0], np.array(points)[:,1]
+
 
 if SEED:
     np.random.seed(SEED)
 # Simulation ==================================================================
 
-# Real points -------------------------------------------------------------
 if GRID:
-    x_real, y_real, N_RECORDERS = params.generate_grid(2, 2, 25)
+    x_real, y_real, N = generate_grid(2, 2, 25)
     real_array = np.column_stack([x_real, y_real])
+    array_shape="grid"
+elif MIN_RECORDERS_DISTANCE is not None:
+    x_real, y_real = generate_points_with_min_distance(
+        N_RECORDERS,
+        xlim=(0,70),
+        ylim=(0,70),
+        dmin=MIN_RECORDERS_DISTANCE)
+    real_array = np.column_stack([x_real, y_real])
+    array_shape="min_dist"
 else:
     x_real = np.random.uniform(0,50,N_RECORDERS)
     y_real = np.random.uniform(0,50,N_RECORDERS)
     real_array = np.column_stack([x_real, y_real])
+    array_shape = "random"
 
 # Biased points + variance ------------------------------------------------
 array_rotation, array_x_shift, array_y_shift = np.random.uniform(-5,5,3)
@@ -59,7 +132,7 @@ measured_positions = generate_measured_positions(x_biased, y_biased, sdxs, sdys,
 # Measured distances ------------------------------------------------------
 if GRID:
     thresholds = [25, np.sqrt(25**2 + 25**2)]
-    measured_pairs = [(i,j) for i in range(N_RECORDERS) for j in range(i+1,N)
+    measured_pairs = [(i,j) for i in range(N_RECORDERS) for j in range(i+1,N_RECORDERS)
                       if any(np.isclose(distance.euclidean(real_array[i], real_array[j]), t, atol=1e-6) for t in thresholds)]
     measured_distances = [distance.euclidean(real_array[i], real_array[j]) for i,j in measured_pairs]
 else:
