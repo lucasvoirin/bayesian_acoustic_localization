@@ -29,6 +29,8 @@ sns.kdeplot(x=results["loc_error_diff"], fill=True, ax=axes[1], color=COL3)
 axes[1].set_xlabel("Difference (m)")
 
 fig.suptitle("Error on localization", fontsize=15, y=.98)
+axes[0].set_title("(a)", fontsize=12, y=1.04)
+axes[1].set_title("(b)", fontsize=12, y=1.04)
 
 
 for ax in axes.flat:

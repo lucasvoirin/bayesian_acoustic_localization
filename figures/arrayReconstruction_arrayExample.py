@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 # Settings ====================================================================
 GRID = False # params.GRID # Recorders placed in a regular grid
-SEED = 123 # For reproductibility
+SEED = 666 # For reproductibility
 
 N_SAMPLES = 500# params.N_SAMPLES # Number of prior positions per recorder
 N_FIXED_PRIORS = 2 #params.N_FIXED_PRIORS  # par exemple
@@ -18,7 +18,7 @@ N_RECORDERS = 6 # Number of recorders
 DISTANCE_ERROR = 0.3# params.DISTANCE_ERROR # Expected measurement error between recorders
 
 # Parameters for array deformation
-ARRAY_JITTER = 2 # params.ARRAY_JITTER
+ARRAY_JITTER = 5 # params.ARRAY_JITTER
 # ARRAY_ROTATION = 5
 # ARRAY_X_SHIFT = 5
 # ARRAY_Y_SHIFT = 0
@@ -234,5 +234,5 @@ plt.grid(True, linestyle="--", alpha=0.4)
 plt.axis("equal")
 plt.tight_layout()
 
-plt.savefig("./results/figures/arrayReconstruction_arrayExampleGrid.png", dpi=300, bbox_inches="tight")
+plt.savefig("./results/figures/arrayReconstruction_arrayExample.png", dpi=300, bbox_inches="tight")
 # plt.show()

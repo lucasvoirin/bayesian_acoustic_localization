@@ -29,9 +29,9 @@ MIN_RECORDERS_DISTANCE = 10 # Minimum distance between two recorders (m)
 DISTANCE_ERROR = 0.3 # Expected measurement error between recorders (m)
 
 # Parameters for array deformation (aléatoire sinon)
-ARRAY_JITTER = 2
-# ARRAY_ROTATION = 2
-# ARRAY_X_SHIFT = 2
+ARRAY_JITTER = 5
+# ARRAY_ROTATION = 5
+# ARRAY_X_SHIFT = 5
 # ARRAY_Y_SHIFT = 0
 
 
