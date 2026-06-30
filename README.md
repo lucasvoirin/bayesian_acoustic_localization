@@ -88,25 +88,25 @@ python3 download_data.py
 
 ## Usage
 
-As we udes relative paths to access data and functions, please make sure that you are running scripts from the root directory.
+As we used relative paths to access data and functions, please make sure that you are running scripts from the root directory.
 
-The analyses are computation intesive, running them can take a lot of time (several hours).
+The analyses are computation intensive, running them can take a lot of time (several hours), depending on your computer resources.
 
 ### "À la carte"
 
-To run the simultions of array reconstruction, please execute the following scripts in the specified order:
+To run the simulations of the array reconstruction, you should execute the following scripts in the specified order:
 
 1. `src/arrayReconstruction_1_simulations.py`
 2. `src/arrayReconstruction_2_resultsAnalysis.py`
 
-To run the localization tests, please execute the following scripts in the specified order:
+To run the localization tests, you should execute the following scripts in the specified order:
 
 1. `src/fieldTest_1_formatMetadata.py`
 2. `src/fieldTest_2_arrayReconstruction.py`
 3. `src/fieldTest_3_localization.py`
 4. `src/fieldTest_4_resultsAnalysis.py`
 
-To run figure generation scripts, please execute the following scripts:
+To generate the figures, you can run the following scripts:
 
 - `figures/arrayReconstruction_arrayExample.py`
 - `figures/arrayReconstruction_arrayMetrics.py`
@@ -117,21 +117,21 @@ To run figure generation scripts, please execute the following scripts:
 
 ### All
 
-To run all scripts (analyses and figures), please run the following script:
+To run all scripts (analyses and figures) instead of running each separately, we provide the following script for convenience:
 
 ```bash
 python3 run_all.py
 ```
 
-This can take a very long time, it is better to run it on a server.
+Note this script can take a very long time. For this reason, we recommend you run it on a server.
 
-If you experience problems runing this script, you can try to run scripts "à la carte" to debug.
+If you experience problems running ```python3 run_all.py```, you can try to run separate scripts "à la carte" to debug.
 
 ## Notebook
 
-We provide an extra notebook as a simple example of acoustic localization.
+We provide a JupyterLab notebook as a simple example of acoustic localization.
 
-You can access it by running jupyter lab from the root directory.
+You can access it by running Jupyter lab from the root directory on your computer.
 
 ```bash
 jupyter lab
