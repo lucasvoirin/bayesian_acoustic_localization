@@ -58,7 +58,7 @@ for f, est_tab in tqdm(fichiers_a_telecharger, desc="Téléchargement", unit="fi
     os.makedirs(dest_dir, exist_ok=True)
 
     url = f"{BASE_URL}/api/access/datafile/{file_id}"
-    r = requests.get(url, headers={"X-Dataverse-key": API_TOKEN}, timeout=120)
+    r = requests.get(url, timeout=120)
 
     if est_tab:
         filepath_tab_tmp = os.path.join(dest_dir, filename)
