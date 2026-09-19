@@ -61,7 +61,7 @@ for i in range(n):
 
     signals = lps.signal.load_signals(path=PATH, files_list=hearing_files, start=start, stop=stop)
     retards = lps.signal.estimate_tdoa(signals, plot = False, pdf_path="./results/retards.pdf")
-    sigmas = [r["cc_peak_width"] for r in retards]
+    sigmas = [r["cc_peak_width"]/2 for r in retards] # FWHM/2 = HWHM is an approximation of the standard deviation for gaussian peaks (in theory sd = FWHM/2.355)
     coef_matrix_pt, tdoa = lps.signal.compute_coef_matrix(retards)
 
     posterior_trace = lps.spatial.sample_posterior_localization(
