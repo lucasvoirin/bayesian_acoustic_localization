@@ -10,56 +10,33 @@ import matplotlib.pyplot as plt
 df = pd.read_csv('./results/fieldTest_results.csv')
 metadata = pd.read_csv('./results/fieldTest_metadata.csv')
 
-# Only fm
-df = df[metadata['modulation']=='tonal']
-metadata = metadata[metadata['modulation']=='tonal']
+# keep only fm
+df = df[metadata['modulation']=='fm']
+metadata = metadata[metadata['modulation']=='fm']
 
-original_len = len(df)
+len_fm = len(df)
 
-filter = ~(df["max_rhat"]>1.01) & ~(df["min_ess"]<400) & (df["no_divergences"])
+# Remove MCMC sampling problems
+metadata = metadata[~(df["max_rhat"]>1.01) & ~(df["min_ess"]<400) & (df["no_divergences"])]
+df = df[~(df["max_rhat"]>1.01) & ~(df["min_ess"]<400) & (df["no_divergences"])]
 
-metadata = metadata[filter]
-df = df[filter]
+len_fm_ok = len(df)
 
-# number of sounds
-len(df)
+min_err = min(df["distance_target_mode"])
+max_err = max(df["distance_target_mode"])
 
-# Number of sounds
-len(metadata["selec"].unique())
+avg_err = np.mean(df["distance_target_mode"])
+std_err np.std(df["distance_target_mode"])
 
-# Frequencies
-metadata["frequency"].unique()
+numb_under_err_5m = sum(df["distance_target_mode"] <5)
 
-# Durations
-metadata["duration"].unique()
+prop_under_err_5m = sum(df['distance_target_mode']<5)/len_fm_ok
 
-# Distances
-metadata["distance"].unique()
-len(metadata["distance"].unique())
-
-min(df["distance_target_mode"])
-max(df["distance_target_mode"])
-
-np.mean(df["distance_target_mode"])
-np.std(df["distance_target_mode"])
-
-sum(df["distance_target_mode"] <5)
-
-sum(df["distance_target_mode"][metadata["modulation"]=="fm"] <5)/sum(metadata["modulation"]=="fm")
-
-
-sum(df['distance_target_mode']<5)/len(df)
-
-# Probability of good localization with sigma median below 0.05
-total = len(df['sigma_median']<0.05)
-sum(df[df['sigma_median']<0.05]['distance_target_mode']<0.5)/total
-
-# Probability of good localization with sigma median below 0.05
-total = sum(df['min_ess']>2000)
-sum(df[df['min_ess']>2000]['distance_target_mode']<3)/total
-
-
-# Proportion of Rhat
-sum(df["rhat_y"]>=1.01)/len(df)
-sum(df["rhat_x"]>=1.01)/len(df)
-
+print(f"Number of frequency modulated sounds: {len_fm}")
+print(f"Number of frequency modulated sounds without sampling problems: {len_fm_ok}")
+print(f"Minimum distance error: {min_err:.4f}")
+print(f"Maximum distance error: {max_err:.4f}")
+print(f"Average distance error: {avg_err:.4f}")
+print(f"St.Dev. distance error: {std_err:.4f}")
+print(f"Number of sounds under distance error of 5m: {numb_under_err_5m}/{len_fm_ok}")
+print(f"Proportion of sounds under distance error of 5m: {numb_under_err_5m:.4f}")
