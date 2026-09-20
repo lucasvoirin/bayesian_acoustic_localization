@@ -7,6 +7,18 @@ import numpy as np
 from shapely.geometry import Point
 import matplotlib.pyplot as plt
 
+# TONAL
+
+df = pd.read_csv('./results/fieldTest_results.csv')
+
+min_tonal_err = min(df["distance_target_mode"])
+max_tonal_err = max(df["distance_target_mode"])
+
+avg_tonal_err = np.mean(df["distance_target_mode"])
+std_tonal_err = np.std(df["distance_target_mode"])
+
+# MODULATED 
+
 df = pd.read_csv('./results/fieldTest_results.csv')
 metadata = pd.read_csv('./results/fieldTest_metadata.csv')
 
@@ -32,6 +44,13 @@ numb_under_err_5m = sum(df["distance_target_mode"] <5)
 
 prop_under_err_5m = sum(df['distance_target_mode']<5)/len_fm_ok
 
+
+print("TONAL")
+print(f"Minimum tonal distance error: {min_tonal_err:.4f}")
+print(f"Maximum tonal distance error: {max_tonal_err:.4f}")
+print(f"Average tonal distance error: {avg_tonal_err:.4f}")
+print(f"St.Dev. tonal distance error: {std_tonal_err:.4f}")
+print("MODULATED")
 print(f"Number of frequency modulated sounds: {len_fm}")
 print(f"Number of frequency modulated sounds without sampling problems: {len_fm_ok}")
 print(f"Minimum distance error: {min_err:.4f}")
