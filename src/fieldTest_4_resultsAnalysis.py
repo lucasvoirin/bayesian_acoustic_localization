@@ -26,7 +26,7 @@ min_err = min(df["distance_target_mode"])
 max_err = max(df["distance_target_mode"])
 
 avg_err = np.mean(df["distance_target_mode"])
-std_err np.std(df["distance_target_mode"])
+std_err = np.std(df["distance_target_mode"])
 
 numb_under_err_5m = sum(df["distance_target_mode"] <5)
 
